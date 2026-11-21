@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Razan's Quiz 💌</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap">
+<style>
+:root{--bg:#fff1f3;--ink:#4a1d2c;--card:#ffffff;--rose:#e0335f;--rose2:#ff7a9a;--line:#f6c9d4;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a1019;--ink:#ffe3ea;--card:#3a1824;--line:#6b2a40;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:"Fredoka","Baloo 2","Comic Sans MS","Chalkboard SE",ui-rounded,cursive,sans-serif;display:flex;justify-content:center;padding:20px 16px}
+#app{width:100%;max-width:460px;text-align:center;position:relative;z-index:1}
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.fh{position:absolute;bottom:-60px;opacity:.55;animation:rise linear infinite}
+@keyframes rise{0%{transform:translateY(0) translateX(0) rotate(-12deg)}50%{transform:translateY(-60vh) translateX(24px) rotate(12deg)}100%{transform:translateY(-120vh) translateX(-12px) rotate(-12deg)}}
+.bar{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin-bottom:20px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--rose2),var(--rose));transition:width .4s}
+.card{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px 18px}
+h1,h2{margin:0 0 16px;line-height:1.35}
+h1{font-size:26px}h2{font-size:20px;font-weight:700;white-space:pre-line}
+.top{font-size:17px;font-weight:700;margin-bottom:12px}
+.card img{max-width:100%;max-height:52vh;border-radius:14px;display:block;margin:0 auto 16px}
+.btns{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+button.opt{font:inherit;font-size:18px;font-weight:700;padding:14px;border-radius:14px;border:2px solid var(--rose);background:transparent;color:var(--ink);cursor:pointer;transition:transform .12s,background .12s}
+button.opt:hover,button.opt:focus-visible{background:var(--rose);color:#fff;outline:none}
+button.opt:active{transform:scale(.97)}
+.hint{font-size:14px;opacity:.7;margin-top:12px}
+.pop{animation:pop .35s}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+#heart{font-size:min(70vw,300px);line-height:1;background:none;border:0;cursor:pointer;animation:beat 1.1s infinite;filter:drop-shadow(0 10px 18px rgba(224,51,95,.4))}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+#final{font-size:34px;font-weight:800;line-height:1.3;color:var(--rose);animation:pop .6s}
+.again{margin-top:18px}
+.bubbly{font-family:"Fredoka","Baloo 2","Comic Sans MS","Chalkboard SE",ui-rounded,cursive,sans-serif}
+.pct{font-size:clamp(44px,15vw,68px);font-weight:700;color:var(--rose);line-height:1.1;text-shadow:0 4px 0 var(--line),0 8px 16px rgba(224,51,95,.25);margin:0 0 4px}
+.pctsub{font-size:20px;font-weight:600;margin:0 0 6px}
+@media (prefers-reduced-motion:reduce){#heart,.pop{animation:none}.fh{display:none}}
+</style></head>
+<body><div class="bg" id="bg"></div><div id="app"><div class="bar"><i id="fill"></i></div><div id="stage"></div></div>
+<script>
+var IMG1="photo1.jpg",IMG2="photo2.jpg";
+var YN=["Yes","No"];
+// type: yn | custom. ok = index(es) of right answers
+var Q=[
+{t:"💌 Razan, are you ready to take the quiz?!!! 😍🥰🎉",o:["Yes 😍","Yes 🥰"],intro:1},
+{t:"lw mot bokra htb2i mabsota en mfi4 Marwan ?",o:YN,ok:[1]},
+{t:"w74tk?",o:YN,ok:[0]},
+{t:"fakra elsora di bta3etna ? M4 Kona 7lween ?",img:IMG1,o:YN,ok:[0]},
+{t:"Me + you together = nice and cute family sleepover\n\nme + you NOT together = awkward and sad family sleepover",o:YN,ok:[0]},
+{top:"Remember this picture of us holding hands?",img:IMG2,o:YN,ok:[0]},
+{t:"Do we agree that most of the time you are a pain in the ass and it's you who need to give a little bit of effort and know how to be a girlfriend ?",o:YN,ok:[0]},
+{t:"Hal hn5sar 7aga ? La\n\nfih memories testahel ? Yes\n\nbet7ebini ?",o:YN,ok:[0]},
+
+
+{t:"A 24 V battery is connected to two resistors in series: 4 Ω and 8 Ω. What is the current flowing through the circuit?",o:["2 A","1 A","3 A","6 A"],ok:[0],hint:"hint: 2A"}
+];
+var i=0,right=0,total=Q.length-1,st=document.getElementById("stage"),fill=document.getElementById("fill");
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function show(){
+  var q=Q[i];fill.style.width=(i/Q.length*100)+"%";
+  var h='<div class="card pop">';
+  if(q.top)h+='<div class="top">'+esc(q.top)+'</div>';
+  if(q.img)h+='<img src="'+q.img+'" alt="">';
+  if(q.t)h+='<h2>'+esc(q.t)+'</h2>';
+  h+='<div class="btns">';
+  q.o.forEach(function(o,k){h+='<button class="opt" data-k="'+k+'">'+esc(o)+'</button>'});
+  h+='</div>';
+  if(q.hint)h+='<div class="hint">'+esc(q.hint)+'</div>';
+  st.innerHTML=h+'</div>';
+  st.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){answer(+b.dataset.k)}});
+}
+function answer(k){
+  var q=Q[i];
+  if(!q.intro&&q.ok.indexOf(k)>-1)right++;
+  i++;
+  if(i<Q.length)show();else end();
+}
+function end(){
+  fill.style.width="100%";
+  var wrong=total-right;
+  if(right>wrong){
+    st.innerHTML='<div class="pop bubbly"><p class="pct">'+Math.round(right/total*100)+'%</p><p class="pctsub">Tap the heart 👇</p><button id="heart" aria-label="Tap the heart">❤️</button></div>';
+    document.getElementById("heart").onclick=function(){
+      st.innerHTML='<div id="final" class="bubbly">Then let\'s get back together 😗</div>';
+    };
+  }else{
+    st.innerHTML='<div class="card pop"><h2>Hmm… the score is not enough yet 🤨</h2><div class="btns"><button class="opt" id="re">Try again</button></div></div>';
+    document.getElementById("re").onclick=function(){i=1;right=0;show()};
+  }
+}
+(function(){var bg=document.getElementById("bg"),E=["❤️","💖","💗","💕","💘"];for(var n=0;n<18;n++){var s=document.createElement("span");s.className="fh";s.textContent=E[n%E.length];s.style.left=(Math.random()*96)+"%";s.style.fontSize=(16+Math.random()*30)+"px";s.style.animationDuration=(9+Math.random()*10)+"s";s.style.animationDelay=(-Math.random()*18)+"s";bg.appendChild(s)}})();
+show();
+</script></body></html>
